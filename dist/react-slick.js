@@ -1168,6 +1168,19 @@
 
                 document.addEventListener("touchstart", _this.onTouchStart);
                 document.addEventListener("touchend", _this.onTouchEnd);
+
+                _this.list.addEventListener(
+                  "touchstart",
+                  _this.onListTouchStart
+                );
+
+                _this.list.addEventListener(
+                  "touchmove",
+                  _this.onListTouchMove,
+                  {
+                    passive: false
+                  }
+                );
               }
             );
 
@@ -1199,6 +1212,19 @@
 
                 document.removeEventListener("touchstart", _this.onTouchStart);
                 document.removeEventListener("touchend", _this.onTouchEnd);
+
+                _this.list.removeEventListener(
+                  "touchstart",
+                  _this.onListTouchStart
+                );
+
+                _this.list.removeEventListener(
+                  "touchmove",
+                  _this.onListTouchMove,
+                  {
+                    passive: false
+                  }
+                );
 
                 if (_this.autoplayTimer) {
                   clearInterval(_this.autoplayTimer);
@@ -1312,6 +1338,29 @@
               "onTouchEnd",
               function() {
                 _this.isTouching = false;
+              }
+            );
+
+            _defineProperty(
+              _assertThisInitialized(_this),
+              "onListTouchStart",
+              function(e) {
+                _this.firstClientX = e.touches[0].clientX;
+              }
+            );
+
+            _defineProperty(
+              _assertThisInitialized(_this),
+              "onListTouchMove",
+              function(e) {
+                var minValue = 5; // threshold
+
+                _this.clientX = e.touches[0].clientX - _this.firstClientX; // Vertical scrolling does not work when you start swiping horizontally.
+
+                if (Math.abs(_this.clientX) > minValue) {
+                  e.returnValue = false;
+                  return false;
+                }
               }
             );
 
@@ -2378,6 +2427,8 @@
               ssrState
             );
             _this.isTouching = false;
+            _this.firstClientX = null;
+            _this.clientX = null;
             return _this;
           }
 

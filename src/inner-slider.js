@@ -43,6 +43,8 @@ export class InnerSlider extends React.Component {
     const ssrState = this.ssrInit();
     this.state = { ...this.state, ...ssrState };
     this.isTouching = false;
+    this.firstClientX = null;
+    this.clientX = null;
   }
   listRefHandler = ref => (this.list = ref);
   trackRefHandler = ref => (this.track = ref);
@@ -104,6 +106,10 @@ export class InnerSlider extends React.Component {
     }
     document.addEventListener("touchstart", this.onTouchStart);
     document.addEventListener("touchend", this.onTouchEnd);
+    this.list.addEventListener("touchstart", this.onListTouchStart);
+    this.list.addEventListener("touchmove", this.onListTouchMove, {
+      passive: false
+    });
   };
   componentWillUnmount = () => {
     if (this.animationEndCallback) {
@@ -123,6 +129,10 @@ export class InnerSlider extends React.Component {
     }
     document.removeEventListener("touchstart", this.onTouchStart);
     document.removeEventListener("touchend", this.onTouchEnd);
+    this.list.removeEventListener("touchstart", this.onListTouchStart);
+    this.list.removeEventListener("touchmove", this.onListTouchMove, {
+      passive: false
+    });
     if (this.autoplayTimer) {
       clearInterval(this.autoplayTimer);
     }
@@ -213,6 +223,21 @@ export class InnerSlider extends React.Component {
   };
   onTouchEnd = () => {
     this.isTouching = false;
+  };
+  onListTouchStart = e => {
+    this.firstClientX = e.touches[0].clientX;
+  };
+  onListTouchMove = e => {
+    const minValue = 5; // threshold
+
+    this.clientX = e.touches[0].clientX - this.firstClientX;
+
+    // Vertical scrolling does not work when you start swiping horizontally.
+    if (Math.abs(this.clientX) > minValue) {
+      e.returnValue = false;
+
+      return false;
+    }
   };
   resizeWindow = (setTrackStyle = true) => {
     const isTrackMounted = Boolean(this.track && this.track.node);
