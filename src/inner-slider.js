@@ -104,8 +104,8 @@ export class InnerSlider extends React.Component {
     } else {
       window.attachEvent("onresize", this.onWindowResized);
     }
-    document.addEventListener("touchstart", this.onTouchStart);
-    document.addEventListener("touchend", this.onTouchEnd);
+    document.addEventListener("touchstart", this.onDocumentTouchStart);
+    document.addEventListener("touchend", this.onDocumentTouchEnd);
     this.list.addEventListener("touchstart", this.onListTouchStart);
     this.list.addEventListener("touchmove", this.onListTouchMove, {
       passive: false
@@ -127,8 +127,8 @@ export class InnerSlider extends React.Component {
     } else {
       window.detachEvent("onresize", this.onWindowResized);
     }
-    document.removeEventListener("touchstart", this.onTouchStart);
-    document.removeEventListener("touchend", this.onTouchEnd);
+    document.removeEventListener("touchstart", this.onDocumentTouchStart);
+    document.removeEventListener("touchend", this.onDocumentTouchEnd);
     this.list.removeEventListener("touchstart", this.onListTouchStart);
     this.list.removeEventListener("touchmove", this.onListTouchMove, {
       passive: false
@@ -218,10 +218,10 @@ export class InnerSlider extends React.Component {
     this.debouncedResize = debounce(() => this.resizeWindow(setTrackStyle), 50);
     this.debouncedResize();
   };
-  onTouchStart = () => {
+  onDocumentTouchStart = () => {
     this.isTouching = true;
   };
-  onTouchEnd = () => {
+  onDocumentTouchEnd = () => {
     this.isTouching = false;
   };
   onListTouchStart = e => {
@@ -233,7 +233,7 @@ export class InnerSlider extends React.Component {
     this.clientX = e.touches[0].clientX - this.firstClientX;
 
     // Vertical scrolling does not work when you start swiping horizontally.
-    if (Math.abs(this.clientX) > minValue) {
+    if (e.cancelable && Math.abs(this.clientX) > minValue) {
       e.returnValue = false;
 
       return false;

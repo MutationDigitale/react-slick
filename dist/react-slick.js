@@ -1166,8 +1166,11 @@
                   window.attachEvent("onresize", _this.onWindowResized);
                 }
 
-                document.addEventListener("touchstart", _this.onTouchStart);
-                document.addEventListener("touchend", _this.onTouchEnd);
+                document.addEventListener(
+                  "touchstart",
+                  _this.onDocumentTouchStart
+                );
+                document.addEventListener("touchend", _this.onDocumentTouchEnd);
 
                 _this.list.addEventListener(
                   "touchstart",
@@ -1210,8 +1213,14 @@
                   window.detachEvent("onresize", _this.onWindowResized);
                 }
 
-                document.removeEventListener("touchstart", _this.onTouchStart);
-                document.removeEventListener("touchend", _this.onTouchEnd);
+                document.removeEventListener(
+                  "touchstart",
+                  _this.onDocumentTouchStart
+                );
+                document.removeEventListener(
+                  "touchend",
+                  _this.onDocumentTouchEnd
+                );
 
                 _this.list.removeEventListener(
                   "touchstart",
@@ -1327,7 +1336,7 @@
 
             _defineProperty(
               _assertThisInitialized(_this),
-              "onTouchStart",
+              "onDocumentTouchStart",
               function() {
                 _this.isTouching = true;
               }
@@ -1335,7 +1344,7 @@
 
             _defineProperty(
               _assertThisInitialized(_this),
-              "onTouchEnd",
+              "onDocumentTouchEnd",
               function() {
                 _this.isTouching = false;
               }
@@ -1357,7 +1366,7 @@
 
                 _this.clientX = e.touches[0].clientX - _this.firstClientX; // Vertical scrolling does not work when you start swiping horizontally.
 
-                if (Math.abs(_this.clientX) > minValue) {
+                if (e.cancelable && Math.abs(_this.clientX) > minValue) {
                   e.returnValue = false;
                   return false;
                 }
