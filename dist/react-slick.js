@@ -1381,6 +1381,7 @@
                   arguments.length > 0 && arguments[0] !== undefined
                     ? arguments[0]
                     : true;
+                if (_this.isTouching) return;
                 var isTrackMounted = Boolean(_this.track && _this.track.node); // prevent warning: setting state on unmounted component (server side rendering)
 
                 if (!isTrackMounted) return;

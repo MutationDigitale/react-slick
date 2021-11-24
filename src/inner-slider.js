@@ -240,6 +240,7 @@ export class InnerSlider extends React.Component {
     }
   };
   resizeWindow = (setTrackStyle = true) => {
+    if (this.isTouching) return;
     const isTrackMounted = Boolean(this.track && this.track.node);
     // prevent warning: setting state on unmounted component (server side rendering)
     if (!isTrackMounted) return;
