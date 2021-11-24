@@ -42,6 +42,7 @@ export class InnerSlider extends React.Component {
     this.debouncedResize = null;
     const ssrState = this.ssrInit();
     this.state = { ...this.state, ...ssrState };
+    this.isTouching = false;
   }
   listRefHandler = ref => (this.list = ref);
   trackRefHandler = ref => (this.track = ref);
@@ -101,6 +102,8 @@ export class InnerSlider extends React.Component {
     } else {
       window.attachEvent("onresize", this.onWindowResized);
     }
+    document.addEventListener("touchstart", this.onTouchStart);
+    document.addEventListener("touchend", this.onTouchEnd);
   };
   componentWillUnmount = () => {
     if (this.animationEndCallback) {
@@ -118,6 +121,8 @@ export class InnerSlider extends React.Component {
     } else {
       window.detachEvent("onresize", this.onWindowResized);
     }
+    document.removeEventListener("touchstart", this.onTouchStart);
+    document.removeEventListener("touchend", this.onTouchEnd);
     if (this.autoplayTimer) {
       clearInterval(this.autoplayTimer);
     }
@@ -198,9 +203,16 @@ export class InnerSlider extends React.Component {
       });
   };
   onWindowResized = setTrackStyle => {
+    if (this.isTouching) return;
     if (this.debouncedResize) this.debouncedResize.cancel();
     this.debouncedResize = debounce(() => this.resizeWindow(setTrackStyle), 50);
     this.debouncedResize();
+  };
+  onTouchStart = () => {
+    this.isTouching = true;
+  };
+  onTouchEnd = () => {
+    this.isTouching = false;
   };
   resizeWindow = (setTrackStyle = true) => {
     const isTrackMounted = Boolean(this.track && this.track.node);
@@ -304,7 +316,8 @@ export class InnerSlider extends React.Component {
   };
   checkImagesLoad = () => {
     let images =
-      (this.list && this.list.querySelectorAll &&
+      (this.list &&
+        this.list.querySelectorAll &&
         this.list.querySelectorAll(".slick-slide img")) ||
       [];
     let imagesCount = images.length,
