@@ -1132,8 +1132,6 @@
                 _this.ro = new resize_observer_polyfill__WEBPACK_IMPORTED_MODULE_8__[
                   "default"
                 ](function() {
-                  if (_this.isTouching) return;
-
                   if (_this.state.animating) {
                     _this.onWindowResized(false); // don't set trackStyle hence don't break animation
 
