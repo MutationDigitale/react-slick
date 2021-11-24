@@ -1132,6 +1132,8 @@
                 _this.ro = new resize_observer_polyfill__WEBPACK_IMPORTED_MODULE_8__[
                   "default"
                 ](function() {
+                  if (_this.isTouching) return;
+
                   if (_this.state.animating) {
                     _this.onWindowResized(false); // don't set trackStyle hence don't break animation
 
@@ -1381,7 +1383,6 @@
                   arguments.length > 0 && arguments[0] !== undefined
                     ? arguments[0]
                     : true;
-                if (_this.isTouching) return;
                 var isTrackMounted = Boolean(_this.track && _this.track.node); // prevent warning: setting state on unmounted component (server side rendering)
 
                 if (!isTrackMounted) return;

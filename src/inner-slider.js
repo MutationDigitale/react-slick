@@ -81,6 +81,7 @@ export class InnerSlider extends React.Component {
       this.lazyLoadTimer = setInterval(this.progressiveLazyLoad, 1000);
     }
     this.ro = new ResizeObserver(() => {
+      if (this.isTouching) return;
       if (this.state.animating) {
         this.onWindowResized(false); // don't set trackStyle hence don't break animation
         this.callbackTimers.push(
@@ -240,7 +241,6 @@ export class InnerSlider extends React.Component {
     }
   };
   resizeWindow = (setTrackStyle = true) => {
-    if (this.isTouching) return;
     const isTrackMounted = Boolean(this.track && this.track.node);
     // prevent warning: setting state on unmounted component (server side rendering)
     if (!isTrackMounted) return;
