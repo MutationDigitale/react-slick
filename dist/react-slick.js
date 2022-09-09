@@ -1619,8 +1619,8 @@
                   } else {
                     var prevClickHandler = image.onclick;
 
-                    image.onclick = function() {
-                      prevClickHandler();
+                    image.onclick = function(e) {
+                      prevClickHandler(e);
                       image.parentNode.focus();
                     };
                   }
